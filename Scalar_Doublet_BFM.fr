@@ -1,0 +1,128 @@
+(* ************************** *)
+(* *****  Information   ***** *)
+(* ************************** *)
+M$ModelName = "Scalar_Doublet_BFM";
+
+M$Information = {
+  Authors      -> {"SDB", "SD", "DF", "SH"}, 
+  Version      -> "1.0",
+  Date         -> "15.09.2022",
+  Institutions -> {"UGR", "BNL", "BNL", "Harvard"},
+  Emails       -> {"sdb@ugr.es", "dawson@bnl.gov", "dfontes@bnl.gov", "shomiller@g.harvard.edu"}
+};
+
+FeynmanGauge = True;
+
+(* ************************** *)
+(* **** Particle classes **** *)
+(* ************************** *)
+M$ClassesDescription = {
+
+  S[105] == {
+    ClassName        -> H2,
+    Indices        -> {Index[SU2D]},
+    SelfConjugate    -> False,
+    Mass             -> MH2,
+    FullName        -> "heavy",
+    QuantumNumbers -> {Y -> 1/2},
+    Width            -> 0
+  }
+
+};
+
+(* ************************** *)
+(* *****   Parameters   ***** *)
+(* ************************** *)
+M$Parameters = {
+
+  (* External parameters *)
+
+  (* Internal Parameters *)
+
+  MH2 == { 
+    ParameterType     -> Internal, 
+    ComplexParameter  -> False
+  },
+
+  Z2 == { 
+    ParameterType     -> Internal, 
+    ComplexParameter  -> False
+  },
+
+  Z3 == { 
+    ParameterType     -> Internal, 
+    ComplexParameter  -> False
+  },
+
+  Z4 == { 
+    ParameterType     -> Internal, 
+    ComplexParameter  -> False
+  },
+
+  Z5 == { 
+    ParameterType     -> Internal, 
+    ComplexParameter  -> True
+  },
+
+  Z6 == { 
+    ParameterType     -> Internal, 
+    ComplexParameter  -> True
+  },
+
+  Z7 == { 
+    ParameterType     -> Internal, 
+    ComplexParameter  -> True
+  },
+
+  lamL2 == { 
+    ParameterType     -> Internal, 
+    Indices          -> {Index[Generation], Index[Generation]},
+    ComplexParameter  -> True
+  },
+
+  lamU2 == { 
+    ParameterType     -> Internal, 
+    Indices          -> {Index[Generation], Index[Generation]},
+    ComplexParameter  -> True
+  },
+
+  lamD2 == { 
+    ParameterType     -> Internal, 
+    Indices          -> {Index[Generation], Index[Generation]},
+    ComplexParameter  -> True
+  }
+
+};
+
+
+(* ************************** *)
+(* *****   Lagrangian   ***** *)
+(* ************************** *)
+
+gotoBFM={G[a__]->G[a]+GQuantum[a],Wi[a__]->Wi[a]+WiQuantum[a],B[a__]->B[a]+BQuantum[a]};
+
+LBSMYukawa := Module[{sp1,ii,jj,cc,ff1,ff2,ff3,yuk},
+		      yuk =ExpandIndices[lamD2[ff1, ff2] DRbar[sp1, ff1, cc].QL[sp1, ii, ff2, cc] H2bar[ii] 
+				 +      lamL2[ff1, ff2] LRbar[sp1, ff1].LL[sp1, ii, ff2] H2bar[ii]
+ 				 +      lamU2[ff1, ff2] URbar[sp1, ff1, cc].QL[sp1, ii, ff2, cc] Eps[ii,jj] H2[jj]] ;
+			  yuk+HC[yuk] ];
+
+LNP:=Module[{ii,jj, kk,ll,mm, mu},
+		ExpandIndices[DC[H2bar[ii],mu] DC[H2[ii],mu]-MH2^2 H2bar[ii] H2[ii]
+		- (Z2/2) H2bar[ii] H2[ii] H2bar[jj] H2[jj]
+		-  Z3 Phibar[ii] Phi[ii] H2bar[jj] H2[jj]
+		-  Z4 Phibar[ii] H2[ii] H2bar[jj] Phi[jj]
+		-   LBSMYukawa ]] /. gotoBFM;
+
+LNP2:=Module[{ii,jj, kk,ll,mm, mu, dumvar1},
+		dumvar1 = ExpandIndices[-(Z5/2) Phibar[ii] H2[ii]  Phibar[jj] H2[jj]
+		-  Z6 Phibar[ii] Phi[ii]  Phibar[jj] H2[jj]
+ 		-  Z7 H2bar[ii] H2[ii] Phibar[jj] H2[jj]];
+		dumvar1+HC[dumvar1]
+	];
+
+
+
+Ltot := LSM + LNP + LNP2 ;
+
+
