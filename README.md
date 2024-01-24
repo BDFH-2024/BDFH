@@ -1,5 +1,5 @@
 # BDFH
-This repository contains auxiliary files from the article arxiv:24xx.xxxx .
+This repository contains auxiliary files from the article arxiv:2401.12279 .
 
 More details:
 
@@ -7,6 +7,6 @@ More details:
 
 (b) Matchmakereft output: MatchingResult.dat .
 
-(c) Matchete implementation in 2HDM: Sec. 3 of allmatching.nb .
+(c) 2HDM implementation in Matchete: Sec. 3 of allmatching.nb .
 
 (d) Sec. 1 and Sec. 2 of allmatching.nb contain details of translation from unphysical to physical parameters.
